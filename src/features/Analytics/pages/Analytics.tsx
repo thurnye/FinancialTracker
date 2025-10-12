@@ -1,45 +1,53 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { analyticsData } from '../utils/analytics.data';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+
+const menuItems: { name: string; path: string }[] = [
+  { name: 'Overview', path: '/analytics' },
+  { name: 'Expenses', path: 'expenses' },
+  { name: 'Transactions', path: 'transactions' },
+];
 
 export default function Analytics() {
-  const { metrics, monthlyExpenses } = analyticsData;
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const currentSegment = pathSegments[pathSegments.length - 1];
+
+  const [activeMenu, setActiveMenu] = useState<string>(
+    currentSegment || 'overview'
+  );
+
+  useEffect(() => {
+    if (currentSegment === 'analytics') {
+      setActiveMenu('overview');
+    } else {
+      setActiveMenu(currentSegment.toLowerCase());
+    }
+  }, [currentSegment]);
 
   return (
-    <div className="space-y-4 pb-6">
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((metric) => (
-          <div
-            key={metric.id}
-            className="bg-white rounded-lg p-3 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
-          >
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
-              style={{ backgroundColor: `${metric.color}20` }}
+    <div className='space-y-4 pb-6'>
+      <div className='p-3  '>
+        <div className='flex gap-2 overflow-x-auto'>
+          {menuItems.map((menu) => (
+            <button
+              key={menu.name}
+              onClick={() => {
+                setActiveMenu(menu.name.toLowerCase());
+                navigate(menu.path);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                activeMenu === menu.name.toLowerCase()
+                  ? 'bg-emerald-600 text-white'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
             >
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: metric.color }}></div>
-            </div>
-            <p className="text-xs text-slate-600 mb-1">{metric.label}</p>
-            <h3 className="text-xl font-bold text-slate-800">${metric.value.toLocaleString()}</h3>
-          </div>
-        ))}
+              {menu.name}
+            </button>
+          ))}
+        </div>
       </div>
-
-      {/* Monthly Expenses Chart */}
-      <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-        <h3 className="text-base font-bold text-slate-800 mb-4">Monthly Expenses</h3>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={monthlyExpenses}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="month" stroke="#64748b" style={{ fontSize: '10px' }} />
-            <YAxis stroke="#64748b" style={{ fontSize: '10px' }} />
-            <Tooltip />
-            <Bar dataKey="income" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expense" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <Outlet />
     </div>
   );
 }

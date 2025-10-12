@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
-import { walletData } from '../utils/wallet.data';
 import IconStyle from '../../../components/ui/IconStyle';
+import { analyticsData } from '../utils/analytics.data';
 
-export default function WalletPortfolioTransactions() {
-  const { transactions } = walletData;
+export default function AnalyticsTransactions() {
+  const { transactions } = analyticsData;
 
   return (
     <div className='bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
@@ -11,12 +10,6 @@ export default function WalletPortfolioTransactions() {
         <h3 className='text-base font-bold text-slate-800'>
           Transaction History
         </h3>
-        <Link
-          to={'/analytics/transactions'}
-          className='text-xs text-emerald-600 hover:text-emerald-700 font-medium'
-        >
-          View All
-        </Link>
       </div>
 
       {/* Table Header */}

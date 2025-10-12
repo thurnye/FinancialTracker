@@ -1,11 +1,13 @@
+import * as LucideIcons from 'lucide-react';
 export interface BudgetCategory {
   id: string;
   name: string;
-  icon: string;
+  icon: keyof typeof LucideIcons;
   color: string;
   spent: number;
   total: number;
   percentage: number;
+  period: string;
 }
 
 export interface SpendingTrendData {

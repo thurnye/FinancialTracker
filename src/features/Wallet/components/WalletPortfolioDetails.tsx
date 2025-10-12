@@ -24,7 +24,7 @@ export default function WalletPortfolioDetails({
     <div className='space-y-3'>
       {card && (
         <>
-          <div className='rounded-xl p-2 px-4  shadow-sm hover:shadow-xl transition-shadow'>
+          <div className='bg-white rounded-xl p-2 px-4  shadow-sm hover:shadow-xl transition-shadow'>
             <h3 className='text-xl font-bold'>{card.name}</h3>
           </div>
           <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>

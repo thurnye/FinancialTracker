@@ -1,12 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Home,
   DollarSign,
   BarChart3,
   Goal,
   ChartNoAxesCombined,
-  Boxes,
 } from 'lucide-react';
 import useBasePathHook from '../../app/hooks/app.useBaseLocationHook';
 
@@ -22,7 +21,6 @@ const menuItems: MenuItem[] = [
   { name: 'Budgets', path: '/budgets', icon: BarChart3 },
   { name: 'Goals', path: '/goals', icon: Goal },
   { name: 'Analytics', path: '/analytics', icon: ChartNoAxesCombined },
-  { name: 'Affiliates', path: '/affiliates', icon: Boxes },
 ];
 
 const SideBar: React.FC = () => {

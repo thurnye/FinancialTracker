@@ -1,9 +1,10 @@
+import * as LucideIcons from 'lucide-react';
 export interface WalletAccount {
   id: string;
   type: 'savings' | 'checking' | 'investment' | 'emergency';
   name: string;
   balance: number;
-  icon: string;
+  icon: keyof typeof LucideIcons;
   color: string;
 }
 
@@ -33,7 +34,7 @@ export interface TransactionItem {
   description: string;
   amount: number;
   currency: string;
-  icon: string;
+  icon: keyof typeof LucideIcons;
   color: string;
 }
 

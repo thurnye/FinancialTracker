@@ -1,5 +1,4 @@
 import { WalletData } from '../types/wallet.types';
-
 export const walletData: WalletData = {
   accounts: [
     {
@@ -7,7 +6,7 @@ export const walletData: WalletData = {
       type: 'savings',
       name: 'Savings Account',
       balance: 90583,
-      icon: 'piggy-bank',
+      icon: 'Landmark',
       color: '#4f46e5',
     },
     {
@@ -15,7 +14,7 @@ export const walletData: WalletData = {
       type: 'checking',
       name: 'Credit Card',
       balance: 25000,
-      icon: 'credit-card',
+      icon: 'HandCoins',
       color: '#8b5cf6',
     },
     {
@@ -23,7 +22,7 @@ export const walletData: WalletData = {
       type: 'investment',
       name: 'Investment Portfolio',
       balance: 150000,
-      icon: 'trending-up',
+      icon: 'ChartNoAxesCombined',
       color: '#ec4899',
     },
     {
@@ -31,7 +30,7 @@ export const walletData: WalletData = {
       type: 'emergency',
       name: 'Emergency Fund',
       balance: 85932,
-      icon: 'shield',
+      icon: 'ShieldAlert',
       color: '#06b6d4',
     },
   ],
@@ -152,7 +151,7 @@ export const walletData: WalletData = {
       description: 'Miami Public House',
       amount: 92.0,
       currency: 'USD',
-      icon: 'arrow-down',
+      icon: 'BanknoteArrowUp',
       color: '#10b981',
     },
     {
@@ -163,7 +162,7 @@ export const walletData: WalletData = {
       description: 'Monthly Grocery',
       amount: -43.0,
       currency: 'USD',
-      icon: 'arrow-up',
+      icon: 'UtilityPole',
       color: '#3b82f6',
     },
     {
@@ -174,7 +173,7 @@ export const walletData: WalletData = {
       description: 'Uber Ride',
       amount: -12.5,
       currency: 'USD',
-      icon: 'car',
+      icon: 'Car',
       color: '#f59e0b',
     },
     {
@@ -185,7 +184,7 @@ export const walletData: WalletData = {
       description: 'Cheesecake Factory',
       amount: -67.23,
       currency: 'USD',
-      icon: 'utensils',
+      icon: 'HandPlatter',
       color: '#8b5cf6',
     },
     {
@@ -196,7 +195,7 @@ export const walletData: WalletData = {
       description: 'Amazon.com',
       amount: -145.99,
       currency: 'USD',
-      icon: 'shopping-bag',
+      icon: 'ShoppingCart',
       color: '#ec4899',
     },
   ],

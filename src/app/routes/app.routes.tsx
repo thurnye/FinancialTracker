@@ -9,7 +9,6 @@ import { userRoutes } from "../../features/user/router/user.router";
 import { StatisticsRoutes } from "../../features/statistics/router/statistics.router";
 import { donationsRoutes } from "../../features/donation/router/donation.router";
 import { dashboardRoutes } from "../../features/Dashboard/router/Dashboard.router";
-import { AffiliatesRoutes } from "../../features/Affliates/router/affiliates.routes";
 import { AnalyticsRoutes } from "../../features/Analytics/router/analytics.route";
 import { BudgetsRoutes } from "../../features/Budgets/router/Budgets.router";
 import { goalsRoutes } from "../../features/Goals/router/Goals.router";
@@ -41,7 +40,6 @@ export default function AppRoutes() {
         ...donationsRoutes,
         ...StatisticsRoutes,
         ...dashboardRoutes,
-        ...AffiliatesRoutes,
         ...AnalyticsRoutes,
         ...BudgetsRoutes,
         ...goalsRoutes,

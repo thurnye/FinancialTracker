@@ -1,30 +1,30 @@
-import React,{useState} from 'react';
-import { Plus,  Landmark} from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus } from 'lucide-react';
 import { walletData } from '../utils/wallet.data';
 import IconStyle from '../../../components/ui/IconStyle';
+import { Link } from 'react-router-dom';
 
-interface IWalletPortfolio{
-    setWalletPortfolioId: (id: string) => void;
+interface IWalletPortfolio {
+  setWalletPortfolioId: (id: string) => void;
 }
 
-export default function WalletPortfolio({setWalletPortfolioId}:IWalletPortfolio) {
+export default function WalletPortfolio({
+  setWalletPortfolioId,
+}: IWalletPortfolio) {
   const { accounts } = walletData;
-  const [wallet, setWallet] = useState<string>('1')
-  
-  
-  
+  const [wallet, setWallet] = useState<string>('1');
+
   return (
     <div className='space-y-3'>
-      
       {accounts.map((account) => (
         <div
           key={account.id}
           onClick={() => {
-            setWallet(account.id)
-            setWalletPortfolioId(account.id)
+            setWallet(account.id);
+            setWalletPortfolioId(account.id);
           }}
           className={`
-            ${wallet === account.id ? 'bg-green-100': 'bg-white'}
+            ${wallet === account.id ? 'bg-green-100' : 'bg-white'}
             rounded-lg p-3 shadow-sm border border-slate-200 hover:shadow-md transition-shadow cursor-pointer`}
         >
           <div className='flex items-center justify-between'>
@@ -37,8 +37,11 @@ export default function WalletPortfolio({setWalletPortfolioId}:IWalletPortfolio)
                   className='w-2 h-2 rounded-full'
                   style={{ backgroundColor: account.color }}
                 ></div> */}
-                <IconStyle backgroundColor={account.color} shape={<Landmark size={18} />} />
-
+                <IconStyle
+                  backgroundColor={account.color}
+                  iconName={account.icon}
+                  size={18}
+                />
               </div>
               <div>
                 <p className='text-xs text-slate-600 mb-0.5'>{account.type}</p>
@@ -53,10 +56,13 @@ export default function WalletPortfolio({setWalletPortfolioId}:IWalletPortfolio)
       ))}
 
       {/* Add New Account Button */}
-      <button className='w-full bg-white rounded-lg p-3 shadow-sm border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-emerald-600'>
+      <Link
+        to={'/settings/bank-account'}
+        className='w-full bg-white rounded-lg p-3 shadow-sm border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-emerald-600'
+      >
         <Plus size={16} />
         <span className='text-sm font-medium'>Add new account</span>
-      </button>
+      </Link>
     </div>
   );
 }
