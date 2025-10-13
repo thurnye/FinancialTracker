@@ -5,7 +5,6 @@ import PageNotFound from "../pages/PageNotFound";
 import Layout from "../../components/Layout/Layout";
 import { authRoutes } from "../../features/auth/router/auth.routes";
 import { homeRoutes } from "../../features/home/router/home.router";
-import { userRoutes } from "../../features/user/router/user.router";
 import { StatisticsRoutes } from "../../features/statistics/router/statistics.router";
 import { donationsRoutes } from "../../features/donation/router/donation.router";
 import { dashboardRoutes } from "../../features/Dashboard/router/Dashboard.router";
@@ -36,7 +35,6 @@ export default function AppRoutes() {
       children: [
         { index: true, element: <Navigate to="/dashboard" replace /> },
         ...homeRoutes,
-        ...userRoutes,
         ...donationsRoutes,
         ...StatisticsRoutes,
         ...dashboardRoutes,
