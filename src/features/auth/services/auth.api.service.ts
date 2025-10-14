@@ -6,26 +6,36 @@
  * - Token refresh
  */
 
-import { apiClient, TokenManager } from '../../../shared/services/apiClient.service';
-import { IUserLoginInfo, RegisterData, AuthTokens, IUser } from '../types/auth.types';
+import {
+  apiClient,
+  TokenManager,
+} from '../../../shared/services/apiClient.service';
+import {
+  IUserLoginInfo,
+  RegisterData,
+  AuthTokens,
+  IUser,
+} from '../types/auth.types';
 
 class AuthApiService {
   /**
    * Login user
    */
   async login(credentials: IUserLoginInfo): Promise<AuthTokens> {
-    console.log('[Auth API] 🔐 Login attempt for:', credentials.email);
+    // console.log('[Auth API] 🔐 Login attempt for:', credentials.email);
 
     // Make the request using the underlying axios client to access headers
-    const axiosResponse = await apiClient.getClient().post<any>('/auth/login', credentials);
+    const axiosResponse = await apiClient
+      .getClient()
+      .post<any>('/auth/login', credentials);
 
-    console.log('[Auth API] Login response status:', axiosResponse.status);
-    console.log('[Auth API] Login response headers:', axiosResponse.headers);
-    console.log('[Auth API] Login response data:', axiosResponse.data);
+    // console.log('[Auth API] Login response status:', axiosResponse.status);
+    // console.log('[Auth API] Login response headers:', axiosResponse.headers);
+    // console.log('[Auth API] Login response data:', axiosResponse.data);
 
     // Check for Set-Cookie header (even though we can't read HttpOnly cookies)
     const setCookieHeader = axiosResponse.headers['set-cookie'];
-    console.log('[Auth API] Set-Cookie header:', setCookieHeader);
+    // console.log('[Auth API] Set-Cookie header:', setCookieHeader);
 
     // Extract access token from response header
     const accessToken = axiosResponse.headers['x-access-token'];
@@ -35,21 +45,21 @@ class AuthApiService {
       throw new Error('No access token received from server');
     }
 
-    console.log('[Auth API] ✅ Access token received, length:', accessToken.length);
+    // console.log('[Auth API] ✅ Access token received, length:', accessToken.length);
 
     // Store access token in memory
     // Refresh token is automatically set by backend as HttpOnly cookie
     TokenManager.setAccessToken(accessToken);
-    console.log('[Auth API] ✅ Access token stored in TokenManager');
+    // console.log('[Auth API] ✅ Access token stored in TokenManager');
 
     // Return combined response matching AuthTokens interface
     const result = {
       accessToken,
       refreshToken: '', // Not needed - it's in HttpOnly cookie
-      user: axiosResponse.data.data
+      user: axiosResponse.data.data,
     };
 
-    console.log('[Auth API] ✅ Login successful, returning user:', result.user.email);
+    // console.log('[Auth API] ✅ Login successful, returning user:', result.user.email);
     return result;
   }
 
@@ -58,7 +68,9 @@ class AuthApiService {
    */
   async register(data: RegisterData): Promise<AuthTokens> {
     // Make the request using the underlying axios client to access headers
-    const axiosResponse = await apiClient.getClient().post<any>('/auth/register', data);
+    const axiosResponse = await apiClient
+      .getClient()
+      .post<any>('/auth/register', data);
 
     // Extract access token from response header
     const accessToken = axiosResponse.headers['x-access-token'];
@@ -75,7 +87,7 @@ class AuthApiService {
     return {
       accessToken,
       refreshToken: '', // Not needed - it's in HttpOnly cookie
-      user: axiosResponse.data.data
+      user: axiosResponse.data.data,
     };
   }
 
@@ -103,15 +115,17 @@ class AuthApiService {
    */
   async refreshToken(): Promise<AuthTokens> {
     try {
-      console.log('[Auth API] Calling /auth/refresh endpoint...');
+      // console.log('[Auth API] Calling /auth/refresh endpoint...');
 
       // No need to send refresh token - it's in HttpOnly cookie
       // Backend will automatically read it from the cookie
-      const axiosResponse = await apiClient.getClient().post<any>('/auth/refresh', {});
+      const axiosResponse = await apiClient
+        .getClient()
+        .post<any>('/auth/refresh', {});
 
-      console.log('[Auth API] Refresh response status:', axiosResponse.status);
-      console.log('[Auth API] Response headers:', axiosResponse.headers);
-      console.log('[Auth API] Response data:', axiosResponse.data);
+      // console.log('[Auth API] Refresh response status:', axiosResponse.status);
+      // console.log('[Auth API] Response headers:', axiosResponse.headers);
+      // console.log('[Auth API] Response data:', axiosResponse.data);
 
       // Extract access token from response header
       const accessToken = axiosResponse.headers['x-access-token'];
@@ -121,7 +135,7 @@ class AuthApiService {
         throw new Error('No access token received from server');
       }
 
-      console.log('[Auth API] ✅ Access token received from header');
+      // console.log('[Auth API] ✅ Access token received from header');
 
       // Update access token in memory
       TokenManager.setAccessToken(accessToken);
@@ -135,12 +149,12 @@ class AuthApiService {
         throw new Error('No user data received from server');
       }
 
-      console.log('[Auth API] ✅ User data received:', userData);
+      // console.log('[Auth API] ✅ User data received:', userData);
 
       return {
         accessToken,
         refreshToken: '', // Not needed - it's in HttpOnly cookie
-        user: userData
+        user: userData,
       };
     } catch (error: any) {
       console.error('[Auth API] ❌ Refresh token error:', error);

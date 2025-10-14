@@ -1,13 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import { AppDispatch } from '../../../app/stores/stores';
 import { X, CreditCard } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { CardData, BankAccount } from '../types/settings.types';
+import { Wallet } from '../../Wallet/types/wallet.types';
+import { saveWallet } from '../../Wallet/redux/wallet.slice';
 
 interface AddCreditCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave?: (cardData: CardData) => void;
-  editingAccount?: BankAccount | null;
+  editingWallet?: Wallet | null;
+}
+
+interface CreditCardFormData {
+  walletName: string;
+  bankName: string;
+  cardNumber: string;
+  cardholderName: string;
+  expiryDate: string;
+  cvv: string;
+  creditLimit?: number;
+  balance?: number;
 }
 
 // Format card number with spaces
@@ -21,8 +37,10 @@ export default function AddCreditCardModal({
   isOpen,
   onClose,
   onSave,
-  editingAccount,
+  editingWallet,
 }: AddCreditCardModalProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     control,
     handleSubmit,
@@ -30,24 +48,39 @@ export default function AddCreditCardModal({
     formState: { errors },
     reset,
     setValue,
-  } = useForm<CardData>({
+  } = useForm<CreditCardFormData>({
     defaultValues: {
+      walletName: '',
+      bankName: '',
       cardNumber: '',
       cardholderName: '',
       expiryDate: '',
       cvv: '',
+      creditLimit: 0,
+      balance: 0,
     },
   });
 
   useEffect(() => {
-    if (editingAccount && editingAccount.type === 'card') {
-      // In a real app, you'd fetch the actual data from your backend
-      setValue('cardNumber', editingAccount.accountNumber.replace(/\*/g, ''));
-      setValue('cardholderName', editingAccount.name);
-      setValue('expiryDate', '12/25'); // Placeholder
-      setValue('cvv', '123'); // Placeholder
+    if (editingWallet) {
+      setValue('walletName', editingWallet.walletName);
+      setValue('bankName', editingWallet.bankName);
+      setValue('cardNumber', editingWallet.accountNumber);
+      setValue('cardholderName', editingWallet.bankName);
+
+      // Format expiry date from backend format to MM/YY
+      if (editingWallet.expiryDate) {
+        const date = new Date(editingWallet.expiryDate);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
+        setValue('expiryDate', `${month}/${year}`);
+      }
+
+      setValue('cvv', editingWallet.cvv?.toString() || '');
+      setValue('creditLimit', editingWallet.creditLimit || 0);
+      setValue('balance', editingWallet.balance || 0);
     }
-  }, [editingAccount, setValue]);
+  }, [editingWallet, setValue]);
 
   const cardNumber = watch('cardNumber');
   const cardholderName = watch('cardholderName');
@@ -56,12 +89,62 @@ export default function AddCreditCardModal({
 
   if (!isOpen) return null;
 
-  const onSubmit = (data: CardData) => {
-    if (onSave) {
-      onSave(data);
+  const onSubmit = async (data: CreditCardFormData) => {
+    setIsSubmitting(true);
+    try {
+      // Convert MM/YY to ISO date format
+      let expiryDateISO: string | null = null;
+      if (data.expiryDate) {
+        const [month, year] = data.expiryDate.split('/');
+        expiryDateISO = new Date(parseInt(`20${year}`), parseInt(month) - 1, 1).toISOString();
+      }
+
+      // Determine card type from card number
+      const firstDigit = data.cardNumber.charAt(0);
+      const cardType = firstDigit === '4' ? 'Visa' : firstDigit === '5' ? 'Mastercard' : 'Credit Card';
+
+      const walletData: Wallet = {
+        id: editingWallet?.id || '',
+        walletName: data.walletName,
+        walletType: 'Credit',
+        accountNumber: data.cardNumber,
+        bankName: data.bankName,
+        cardType: cardType,
+        currency: 'USD',
+        balance: data.balance || 0,
+        creditLimit: data.creditLimit || 0,
+        expiryDate: expiryDateISO,
+        cvv: parseInt(data.cvv),
+        isActive: true,
+      };
+
+      await dispatch(saveWallet(walletData)).unwrap();
+
+      // Show success toast
+      toast.success(
+        editingWallet?.id
+          ? 'Credit card updated successfully!'
+          : 'Credit card added successfully!'
+      );
+
+      // Call legacy onSave if provided for backwards compatibility
+      if (onSave) {
+        onSave({
+          cardNumber: data.cardNumber,
+          cardholderName: data.cardholderName,
+          expiryDate: data.expiryDate,
+          cvv: data.cvv,
+        });
+      }
+
+      reset();
+      onClose();
+    } catch (error) {
+      console.error('Failed to save credit card:', error);
+      toast.error('Failed to save credit card. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-    reset();
-    onClose();
   };
 
   const handleBack = () => {
@@ -82,11 +165,77 @@ export default function AddCreditCardModal({
 
         {/* Header */}
         <h2 className='text-xl font-bold text-slate-900 mb-6'>
-          {editingAccount ? 'Edit Credit Card' : 'Add Credit Card'}
+          {editingWallet ? 'Edit Credit Card' : 'Add Credit Card'}
         </h2>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+          <div>
+            <label className='block text-sm font-medium text-slate-700 mb-2'>
+              Wallet Name
+            </label>
+            <Controller
+              name='walletName'
+              control={control}
+              rules={{
+                required: 'Wallet name is required',
+                minLength: {
+                  value: 2,
+                  message: 'Wallet name must be at least 2 characters',
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <input
+                  type='text'
+                  value={value}
+                  onChange={onChange}
+                  className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                    errors.walletName
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-slate-300 focus:ring-emerald-500'
+                  }`}
+                  placeholder='My Credit Card'
+                />
+              )}
+            />
+            {errors.walletName && (
+              <p className='text-xs text-red-600 mt-1'>{errors.walletName.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-slate-700 mb-2'>
+              Bank Name
+            </label>
+            <Controller
+              name='bankName'
+              control={control}
+              rules={{
+                required: 'Bank name is required',
+                minLength: {
+                  value: 2,
+                  message: 'Bank name must be at least 2 characters',
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <input
+                  type='text'
+                  value={value}
+                  onChange={onChange}
+                  className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                    errors.bankName
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-slate-300 focus:ring-emerald-500'
+                  }`}
+                  placeholder='Chase Bank'
+                />
+              )}
+            />
+            {errors.bankName && (
+              <p className='text-xs text-red-600 mt-1'>{errors.bankName.message}</p>
+            )}
+          </div>
+
           <div>
             <label className='block text-sm font-medium text-slate-700 mb-2'>
               Card Number
@@ -240,6 +389,74 @@ export default function AddCreditCardModal({
             </div>
           </div>
 
+          <div className='grid grid-cols-2 gap-4'>
+            <div>
+              <label className='block text-sm font-medium text-slate-700 mb-2'>
+                Credit Limit
+              </label>
+              <Controller
+                name='creditLimit'
+                control={control}
+                rules={{
+                  min: {
+                    value: 0,
+                    message: 'Credit limit must be at least 0',
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <input
+                    type='number'
+                    step='0.01'
+                    value={value}
+                    onChange={onChange}
+                    className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                      errors.creditLimit
+                        ? 'border-red-500 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-emerald-500'
+                    }`}
+                    placeholder='0.00'
+                  />
+                )}
+              />
+              {errors.creditLimit && (
+                <p className='text-xs text-red-600 mt-1'>{errors.creditLimit.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-slate-700 mb-2'>
+                Current Balance
+              </label>
+              <Controller
+                name='balance'
+                control={control}
+                rules={{
+                  min: {
+                    value: 0,
+                    message: 'Balance must be at least 0',
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <input
+                    type='number'
+                    step='0.01'
+                    value={value}
+                    onChange={onChange}
+                    className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                      errors.balance
+                        ? 'border-red-500 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-emerald-500'
+                    }`}
+                    placeholder='0.00'
+                  />
+                )}
+              />
+              {errors.balance && (
+                <p className='text-xs text-red-600 mt-1'>{errors.balance.message}</p>
+              )}
+            </div>
+          </div>
+
           {/* Credit Card Visual */}
           <div className='bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl p-6 relative mt-6 text-white'>
             <div className='flex items-start justify-between mb-8'>
@@ -283,9 +500,10 @@ export default function AddCreditCardModal({
             </button>
             <button
               type='submit'
-              className='flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold'
+              disabled={isSubmitting}
+              className='flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold disabled:opacity-50'
             >
-              Save
+              {isSubmitting ? 'Saving...' : editingWallet ? 'Update' : 'Save'}
             </button>
           </div>
         </form>

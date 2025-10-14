@@ -56,7 +56,8 @@ export function RegisterScreen() {
       email: '',
       password: '',
       confirmPassword: '',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070',
+      avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070',
       birthdate: '',
       gender: '',
       phoneNumber: '',
@@ -94,7 +95,7 @@ export function RegisterScreen() {
 
     // Simulated registration API
     setTimeout(() => {
-      console.log('Registration data:', data);
+      // console.log('Registration data:', data);
       setIsLoading(false);
       setAuthState(AUTH_STATES.SUCCESS);
       setSuccessMessage(AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS);
@@ -141,12 +142,17 @@ export function RegisterScreen() {
 
               <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                 {/* Personal Information Section */}
-                <h6 className='text-dark mb-3 fw-semibold'>Personal Information</h6>
+                <h6 className='text-dark mb-3 fw-semibold'>
+                  Personal Information
+                </h6>
 
                 <Row>
                   <Col md={6}>
                     {/* First Name */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.FIRST_NAME}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.FIRST_NAME}
+                    >
                       <Form.Label>First Name</Form.Label>
                       <Form.Control
                         type='text'
@@ -172,7 +178,10 @@ export function RegisterScreen() {
 
                   <Col md={6}>
                     {/* Last Name */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.LAST_NAME}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.LAST_NAME}
+                    >
                       <Form.Label>Last Name</Form.Label>
                       <Form.Control
                         type='text'
@@ -224,7 +233,10 @@ export function RegisterScreen() {
                 <Row>
                   <Col md={6}>
                     {/* Birthdate */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.BIRTHDATE}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.BIRTHDATE}
+                    >
                       <Form.Label>Birthdate</Form.Label>
                       <Form.Control
                         type='date'
@@ -241,7 +253,10 @@ export function RegisterScreen() {
 
                   <Col md={6}>
                     {/* Gender */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.GENDER}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.GENDER}
+                    >
                       <Form.Label>Gender</Form.Label>
                       <Form.Select
                         isInvalid={!!errors.gender}
@@ -253,7 +268,9 @@ export function RegisterScreen() {
                         <option value='Male'>Male</option>
                         <option value='Female'>Female</option>
                         <option value='Other'>Other</option>
-                        <option value='Prefer not to say'>Prefer not to say</option>
+                        <option value='Prefer not to say'>
+                          Prefer not to say
+                        </option>
                       </Form.Select>
                       <Form.Control.Feedback type='invalid'>
                         {errors.gender?.message}
@@ -263,7 +280,10 @@ export function RegisterScreen() {
                 </Row>
 
                 {/* Phone Number */}
-                <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.PHONE_NUMBER}>
+                <Form.Group
+                  className='mb-3'
+                  controlId={AUTH_FORM_FIELDS.PHONE_NUMBER}
+                >
                   <Form.Label>Phone Number</Form.Label>
                   <Form.Control
                     type='tel'
@@ -282,7 +302,10 @@ export function RegisterScreen() {
                 <h6 className='text-dark mb-3 mt-4 fw-semibold'>Address</h6>
 
                 {/* Street Address */}
-                <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.ADDRESS}>
+                <Form.Group
+                  className='mb-3'
+                  controlId={AUTH_FORM_FIELDS.ADDRESS}
+                >
                   <Form.Label>Street Address</Form.Label>
                   <Form.Control
                     type='text'
@@ -300,7 +323,10 @@ export function RegisterScreen() {
                 <Row>
                   <Col md={6}>
                     {/* City */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.CITY}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.CITY}
+                    >
                       <Form.Label>City</Form.Label>
                       <Form.Control
                         type='text'
@@ -318,7 +344,10 @@ export function RegisterScreen() {
 
                   <Col md={6}>
                     {/* State/Province */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.STATE}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.STATE}
+                    >
                       <Form.Label>State/Province</Form.Label>
                       <Form.Control
                         type='text'
@@ -338,7 +367,10 @@ export function RegisterScreen() {
                 <Row>
                   <Col md={6}>
                     {/* Country */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.COUNTRY}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.COUNTRY}
+                    >
                       <Form.Label>Country</Form.Label>
                       <Form.Control
                         type='text'
@@ -356,7 +388,10 @@ export function RegisterScreen() {
 
                   <Col md={6}>
                     {/* Postal Code */}
-                    <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.POSTAL_CODE}>
+                    <Form.Group
+                      className='mb-3'
+                      controlId={AUTH_FORM_FIELDS.POSTAL_CODE}
+                    >
                       <Form.Label>Postal Code</Form.Label>
                       <Form.Control
                         type='text'
@@ -377,7 +412,10 @@ export function RegisterScreen() {
                 <h6 className='text-dark mb-3 mt-4 fw-semibold'>Security</h6>
 
                 {/* Password */}
-                <Form.Group className='mb-3' controlId={AUTH_FORM_FIELDS.PASSWORD}>
+                <Form.Group
+                  className='mb-3'
+                  controlId={AUTH_FORM_FIELDS.PASSWORD}
+                >
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type='password'
@@ -410,7 +448,10 @@ export function RegisterScreen() {
                 </Form.Group>
 
                 {/* Confirm Password */}
-                <Form.Group className='mb-4' controlId={AUTH_FORM_FIELDS.CONFIRM_PASSWORD}>
+                <Form.Group
+                  className='mb-4'
+                  controlId={AUTH_FORM_FIELDS.CONFIRM_PASSWORD}
+                >
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
                     type='password'

@@ -14,10 +14,10 @@ async function fetchTransactions() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    console.log(JSON.stringify(data, null, 2));
+    // console.log(JSON.stringify(data, null, 2));
 
     data.transactions?.forEach((tx) => {
-      console.log(
+      // console.log(
         `${tx.details.completed} | ${tx.other_account.holder.name} | ${tx.details.value.amount} ${tx.details.value.currency} | ${tx.details.description}`
       );
     });

@@ -19,9 +19,10 @@ useEffect(() => {
   initRef.current = true;
 
   dispatch(initializeAuth())
-    .then(() => console.log('[App] Initialization successful'))
-    .catch((err) => console.error('[App] Initialization failed:', err))
-    .finally(() => setIsInitialized(true));
+    // .then(() => console.log('[App] Initialization successful'))
+    // .catch((err) => console.error('[App] Initialization failed:', err))
+    // .finally(() => setIsInitialized(true));
+    setIsInitialized(true);
 }, [dispatch]);
 
 

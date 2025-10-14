@@ -1,46 +1,52 @@
-
 // -------------------------------
 // Auth Initialization (runs on app load)
 // -------------------------------
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getUser, saveUser, clearUserStorage } from "../../../../app/utils/app.storage";
-import { TokenManager } from "../../../../shared/services/apiClient.service";
-import { ApiClientError } from "../../../../shared/types/api.types";
-import { authApiService } from "../../services/auth.api.service";
-import { IUserLoginInfo, RegisterData } from "../../types/auth.types";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  getUser,
+  saveUser,
+  clearUserStorage,
+} from '../../../../app/utils/app.storage';
+import { TokenManager } from '../../../../shared/services/apiClient.service';
+import { ApiClientError } from '../../../../shared/types/api.types';
+import { authApiService } from '../../services/auth.api.service';
+import { IUserLoginInfo, RegisterData } from '../../types/auth.types';
 
-export const initializeAuth = createAsyncThunk('auth/initialize', async (_, { rejectWithValue }) => {
-  try {
-    const storedUser = getUser();
-    const token = TokenManager.getAccessToken();
+export const initializeAuth = createAsyncThunk(
+  'auth/initialize',
+  async (_, { rejectWithValue }) => {
+    try {
+      const storedUser = getUser();
+      const token = TokenManager.getAccessToken();
 
-    // If both user and token exist, skip refresh and reuse them
-    if (storedUser && token) {
-      console.log('[Auth Init] Rehydrating from sessionStorage + localStorage');
-      return { user: storedUser, initialized: true };
+      // If both user and token exist, skip refresh and reuse them
+      if (storedUser && token) {
+        // console.log('[Auth Init] Rehydrating from sessionStorage + localStorage');
+        return { user: storedUser, initialized: true };
+      }
+
+      // Otherwise, try silent refresh via backend cookie
+      // console.log('[Auth Init] Trying silent refresh with HttpOnly cookie...');
+      const refreshed = await authApiService.refreshToken();
+      if (refreshed.accessToken) {
+        TokenManager.setAccessToken(refreshed.accessToken);
+        saveUser(refreshed.user);
+        return { user: refreshed.user, initialized: true };
+      }
+
+      console.warn('[Auth Init] No valid refresh response.');
+      clearUserStorage();
+      TokenManager.clear();
+      return { user: null, initialized: true };
+    } catch (error) {
+      console.error('[Auth Init] Silent refresh failed:', error);
+      clearUserStorage();
+      TokenManager.clear();
+      return { user: null, initialized: true };
     }
-
-    // Otherwise, try silent refresh via backend cookie
-    console.log('[Auth Init] Trying silent refresh with HttpOnly cookie...');
-    const refreshed = await authApiService.refreshToken();
-    if (refreshed.accessToken) {
-      TokenManager.setAccessToken(refreshed.accessToken);
-      saveUser(refreshed.user);
-      return { user: refreshed.user, initialized: true };
-    }
-
-    console.warn('[Auth Init] No valid refresh response.');
-    clearUserStorage();
-    TokenManager.clear();
-    return { user: null, initialized: true };
-  } catch (error) {
-    console.error('[Auth Init] Silent refresh failed:', error);
-    clearUserStorage();
-    TokenManager.clear();
-    return { user: null, initialized: true };
   }
-});
+);
 
 // -------------------------------
 // Login
@@ -51,7 +57,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await authApiService.login(credentials);
       saveUser(response.user);
-      console.log("USER:::", response)
+      // console.log("USER:::", response)
       return response;
     } catch (error) {
       if (error instanceof ApiClientError) {
@@ -61,7 +67,9 @@ export const loginUser = createAsyncThunk(
           field: error.field,
         });
       }
-      return rejectWithValue({ message: 'Unable to log in. Please try again.' });
+      return rejectWithValue({
+        message: 'Unable to log in. Please try again.',
+      });
     }
   }
 );
@@ -84,7 +92,9 @@ export const registerUser = createAsyncThunk(
           field: error.field,
         });
       }
-      return rejectWithValue({ message: 'Unable to register. Please try again.' });
+      return rejectWithValue({
+        message: 'Unable to register. Please try again.',
+      });
     }
   }
 );

@@ -5,9 +5,47 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ApiClientError } from '../../../shared/types/api.types';
 import { WalletApiService } from '../services/wallet.api.service';
-import { WalletAccount, ICreditCard, TransactionItem } from '../types/wallet.types';
+import { Wallet, WalletAccount, ICreditCard, TransactionItem } from '../types/wallet.types';
 
-// Wallet Accounts
+// Main Wallet CRUD
+export const fetchWallets = createAsyncThunk(
+  'wallet/fetchWallets',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await WalletApiService.getWallets();
+    } catch (error) {
+      const err = error instanceof ApiClientError ? error.message : 'Failed to fetch wallets';
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const saveWallet = createAsyncThunk(
+  'wallet/saveWallet',
+  async (data: Wallet, { rejectWithValue }) => {
+    try {
+      return await WalletApiService.saveWallet(data);
+    } catch (error) {
+      const err = error instanceof ApiClientError ? error.message : 'Failed to save wallet';
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const deleteWallet = createAsyncThunk(
+  'wallet/deleteWallet',
+  async (walletId: string, { rejectWithValue }) => {
+    try {
+      await WalletApiService.deleteWallet(walletId);
+      return walletId;
+    } catch (error) {
+      const err = error instanceof ApiClientError ? error.message : 'Failed to delete wallet';
+      return rejectWithValue(err);
+    }
+  }
+);
+
+// Wallet Accounts (Legacy)
 export const fetchWalletAccounts = createAsyncThunk(
   'wallet/fetchAccounts',
   async (_, { rejectWithValue }) => {

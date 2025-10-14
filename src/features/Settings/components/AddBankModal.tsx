@@ -1,16 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import { AppDispatch } from '../../../app/stores/stores';
 import { X, Landmark } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { BankData, BankAccount } from '../types/settings.types';
+import { Wallet } from '../../Wallet/types/wallet.types';
+import { saveWallet } from '../../Wallet/redux/wallet.slice';
 
 interface AddBankModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave?: (bankData: BankData) => void;
-  editingAccount?: BankAccount | null;
+  editingWallet?: Wallet | null;
 }
 
-export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }: AddBankModalProps) {
+interface BankFormData {
+  walletName: string;
+  bankName: string;
+  routingNumber: string;
+  accountNumber: string;
+  fullName: string;
+  balance?: number;
+}
+
+export default function AddBankModal({ isOpen, onClose, onSave, editingWallet }: AddBankModalProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -18,23 +34,28 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
     formState: { errors },
     reset,
     setValue,
-  } = useForm<BankData>({
+  } = useForm<BankFormData>({
     defaultValues: {
-      routingNumber: '25487',
-      accountNumber: '36475',
-      fullName: 'Carla Pascle',
+      walletName: '',
+      bankName: '',
+      routingNumber: '',
+      accountNumber: '',
+      fullName: '',
+      balance: 0,
     },
   });
 
   useEffect(() => {
-    if (editingAccount && editingAccount.type === 'bank') {
-      // Extract routing number and account number from the masked account number
-      // In a real app, you'd fetch the actual data from your backend
-      setValue('routingNumber', '25487'); // Placeholder
-      setValue('accountNumber', editingAccount.accountNumber.replace(/\*/g, ''));
-      setValue('fullName', editingAccount.name);
+    if (editingWallet) {
+      setValue('walletName', editingWallet.walletName);
+      setValue('bankName', editingWallet.bankName);
+      setValue('accountNumber', editingWallet.accountNumber);
+      setValue('fullName', editingWallet.bankName); // Using bankName as fallback for fullName
+      setValue('balance', editingWallet.balance || 0);
+      // Note: routing number is not stored in backend, using placeholder
+      setValue('routingNumber', '');
     }
-  }, [editingAccount, setValue]);
+  }, [editingWallet, setValue]);
 
   const routingNumber = watch('routingNumber');
   const accountNumber = watch('accountNumber');
@@ -42,12 +63,46 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
 
   if (!isOpen) return null;
 
-  const onSubmit = (data: BankData) => {
-    if (onSave) {
-      onSave(data);
+  const onSubmit = async (data: BankFormData) => {
+    setIsSubmitting(true);
+    try {
+      const walletData: Wallet = {
+        id: editingWallet?.id || '',
+        walletName: data.walletName,
+        walletType: 'Bank',
+        accountNumber: data.accountNumber,
+        bankName: data.bankName,
+        currency: 'USD',
+        balance: data.balance || 0,
+        isActive: true,
+      };
+
+      await dispatch(saveWallet(walletData)).unwrap();
+
+      // Show success toast
+      toast.success(
+        editingWallet?.id
+          ? 'Bank account updated successfully!'
+          : 'Bank account added successfully!'
+      );
+
+      // Call legacy onSave if provided for backwards compatibility
+      if (onSave) {
+        onSave({
+          routingNumber: data.routingNumber,
+          accountNumber: data.accountNumber,
+          fullName: data.fullName,
+        });
+      }
+
+      reset();
+      onClose();
+    } catch (error) {
+      console.error('Failed to save bank account:', error);
+      toast.error('Failed to save bank account. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-    reset();
-    onClose();
   };
 
   const handleBack = () => {
@@ -68,11 +123,61 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
 
         {/* Header */}
         <h2 className='text-xl font-bold text-slate-900 mb-6'>
-          {editingAccount ? 'Edit Bank Account' : 'Link a bank account'}
+          {editingWallet ? 'Edit Bank Account' : 'Link a bank account'}
         </h2>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+          <div>
+            <label className='block text-sm font-medium text-slate-700 mb-2'>
+              Wallet Name
+            </label>
+            <input
+              type='text'
+              {...register('walletName', {
+                required: 'Wallet name is required',
+                minLength: {
+                  value: 2,
+                  message: 'Wallet name must be at least 2 characters',
+                },
+              })}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                errors.walletName
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-slate-300 focus:ring-emerald-500'
+              }`}
+              placeholder='My Checking Account'
+            />
+            {errors.walletName && (
+              <p className='text-xs text-red-600 mt-1'>{errors.walletName.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-slate-700 mb-2'>
+              Bank Name
+            </label>
+            <input
+              type='text'
+              {...register('bankName', {
+                required: 'Bank name is required',
+                minLength: {
+                  value: 2,
+                  message: 'Bank name must be at least 2 characters',
+                },
+              })}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                errors.bankName
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-slate-300 focus:ring-emerald-500'
+              }`}
+              placeholder='Chase Bank'
+            />
+            {errors.bankName && (
+              <p className='text-xs text-red-600 mt-1'>{errors.bankName.message}</p>
+            )}
+          </div>
+
           <div>
             <label className='block text-sm font-medium text-slate-700 mb-2'>
               Routing number
@@ -80,7 +185,6 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
             <input
               type='text'
               {...register('routingNumber', {
-                required: 'Routing number is required',
                 pattern: {
                   value: /^\d{9}$/,
                   message: 'Routing number must be 9 digits',
@@ -91,7 +195,7 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-slate-300 focus:ring-emerald-500'
               }`}
-              placeholder='25487'
+              placeholder='021000021'
             />
             {errors.routingNumber && (
               <p className='text-xs text-red-600 mt-1'>{errors.routingNumber.message}</p>
@@ -116,7 +220,7 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-slate-300 focus:ring-emerald-500'
               }`}
-              placeholder='36475'
+              placeholder='1234567890'
             />
             {errors.accountNumber && (
               <p className='text-xs text-red-600 mt-1'>{errors.accountNumber.message}</p>
@@ -141,10 +245,35 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-slate-300 focus:ring-emerald-500'
               }`}
-              placeholder='Carla Pascle'
+              placeholder='John Doe'
             />
             {errors.fullName && (
               <p className='text-xs text-red-600 mt-1'>{errors.fullName.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-slate-700 mb-2'>
+              Initial Balance
+            </label>
+            <input
+              type='number'
+              step='0.01'
+              {...register('balance', {
+                min: {
+                  value: 0,
+                  message: 'Balance must be at least 0',
+                },
+              })}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                errors.balance
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-slate-300 focus:ring-emerald-500'
+              }`}
+              placeholder='0.00'
+            />
+            {errors.balance && (
+              <p className='text-xs text-red-600 mt-1'>{errors.balance.message}</p>
             )}
           </div>
 
@@ -190,9 +319,10 @@ export default function AddBankModal({ isOpen, onClose, onSave, editingAccount }
             </button>
             <button
               type='submit'
-              className='flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold'
+              disabled={isSubmitting}
+              className='flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold disabled:opacity-50'
             >
-              Save
+              {isSubmitting ? 'Saving...' : editingWallet ? 'Update' : 'Save'}
             </button>
           </div>
         </form>

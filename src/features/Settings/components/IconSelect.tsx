@@ -10,9 +10,13 @@ interface IconSelectProps {
 }
 
 // Fallback icon list
-const fallbackIcons = categoryIcons.map(icon => icon.value);
+const fallbackIcons = categoryIcons.map((icon) => icon.value);
 
-export default function IconSelect({ value, onChange, error }: IconSelectProps) {
+export default function IconSelect({
+  value,
+  onChange,
+  error,
+}: IconSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -46,11 +50,14 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
           const component = LucideIcons[key as keyof typeof LucideIcons];
 
           // Check if it's a valid React component (should be a function/object)
-          return component && (typeof component === 'function' || typeof component === 'object');
+          return (
+            component &&
+            (typeof component === 'function' || typeof component === 'object')
+          );
         })
         .sort();
 
-      console.log('Loaded icons:', iconNames.length); // Debug log
+      // console.log('Loaded icons:', iconNames.length); // Debug log
 
       // If no icons were loaded, use fallback
       if (iconNames.length === 0) {
@@ -69,26 +76,29 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
   // Filter icons based on search query
   const filteredIcons = useMemo(() => {
     if (!allIconNames || allIconNames.length === 0) {
-      console.log('No icon names available'); // Debug
+      // console.log('No icon names available'); // Debug
       return [];
     }
 
     if (!searchQuery.trim()) {
       const defaultIcons = allIconNames.slice(0, 50);
-      console.log('Showing default icons:', defaultIcons.length); // Debug
+      // console.log('Showing default icons:', defaultIcons.length); // Debug
       return defaultIcons;
     }
 
     const filtered = allIconNames.filter((iconName) =>
       iconName.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    console.log('Filtered icons:', filtered.length); // Debug
+    // console.log('Filtered icons:', filtered.length); // Debug
     return filtered;
   }, [searchQuery, allIconNames]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSearchQuery('');
       }
@@ -121,7 +131,9 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
 
   return (
     <div className='relative' ref={dropdownRef}>
-      <label className='block text-xs font-medium text-slate-700 mb-1'>Icon</label>
+      <label className='block text-xs font-medium text-slate-700 mb-1'>
+        Icon
+      </label>
       <button
         type='button'
         onClick={() => setIsOpen(!isOpen)}
@@ -149,7 +161,10 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
           {/* Search Input */}
           <div className='p-2 border-b border-slate-200'>
             <div className='relative'>
-              <Search size={14} className='absolute left-2 top-1/2 -translate-y-1/2 text-slate-400' />
+              <Search
+                size={14}
+                className='absolute left-2 top-1/2 -translate-y-1/2 text-slate-400'
+              />
               <input
                 ref={searchInputRef}
                 type='text'
@@ -175,7 +190,9 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
             {filteredIcons && filteredIcons.length > 0 ? (
               <div className='grid grid-cols-4 gap-1'>
                 {filteredIcons.map((iconName) => {
-                  const Icon = LucideIcons[iconName as keyof typeof LucideIcons] as React.ElementType;
+                  const Icon = LucideIcons[
+                    iconName as keyof typeof LucideIcons
+                  ] as React.ElementType;
                   if (!Icon) return null;
                   return (
                     <button
@@ -183,7 +200,9 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
                       type='button'
                       onClick={() => handleSelect(iconName)}
                       className={`p-2 rounded hover:bg-slate-50 transition-colors flex items-center justify-center ${
-                        value === iconName ? 'bg-emerald-50 ring-1 ring-emerald-500' : ''
+                        value === iconName
+                          ? 'bg-emerald-50 ring-1 ring-emerald-500'
+                          : ''
                       }`}
                       title={formatIconName(iconName)}
                     >
@@ -206,7 +225,10 @@ export default function IconSelect({ value, onChange, error }: IconSelectProps) 
           {/* Footer info */}
           <div className='p-2 border-t border-slate-200 text-[10px] text-slate-500 text-center'>
             {filteredIcons?.length || 0} of {allIconNames?.length || 0} icons
-            {!searchQuery && filteredIcons && filteredIcons.length > 0 && ' (showing first 50)'}
+            {!searchQuery &&
+              filteredIcons &&
+              filteredIcons.length > 0 &&
+              ' (showing first 50)'}
           </div>
         </div>
       )}

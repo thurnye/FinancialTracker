@@ -1,4 +1,36 @@
 import * as LucideIcons from 'lucide-react';
+
+// Main Wallet interface matching backend
+export interface Wallet {
+  id: string;
+  userId?: string;
+  categoryId?: string | null;
+  walletName: string;
+  walletType: string; // e.g. "Bank", "Credit", "Digital"
+  accountNumber: string;
+  bankName: string;
+  currency?: string;
+  balance?: number | null;
+  creditLimit?: number | null;
+  interestRate?: number | null;
+  lastTransactionDate?: string | null;
+  paymentDueDate?: string | null;
+  cardType?: string | null; // e.g. "Visa", "Mastercard"
+  expiryDate?: string | null;
+  cvv?: number | null;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  category?: {
+    id: string;
+    type: string;
+    name: string;
+    icon: string;
+    color: string;
+  };
+}
+
+// Legacy interface for UI components
 export interface WalletAccount {
   id: string;
   type: 'savings' | 'checking' | 'investment' | 'emergency';

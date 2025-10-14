@@ -19,7 +19,7 @@ export const goalsRoutes: RouteObject[] = [
       { index: true, element: <Navigate to="overview" replace /> },
       { path: 'overview', element: <GoalsOverview /> },
       { path: 'add-goal', element: <AddEditGoal /> },
-      { path: 'edit-goal', element: <AddEditGoal /> },
+      { path: 'edit-goal/:id', element: <AddEditGoal /> },
     ]
   },
 ];

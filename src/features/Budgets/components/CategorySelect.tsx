@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../app/stores/stores'; 
+import { AppDispatch } from '../../../app/stores/stores';
 import { useAppSelector } from '../../../app/hooks/app.hooks';
 import { fetchCategories } from '../../Settings/redux/settings.asyncThunkService';
 import SelectDropdown from '../../../components/ui/SelectDropdown';
@@ -29,8 +29,8 @@ export default function CategorySelect({
   }, [dispatch, categories]);
 
   useEffect(() => {
-    console.log('CategorySelect received value:', value);
-    console.log('Available categories:', categories);
+    // console.log('CategorySelect received value:', value);
+    // console.log('Available categories:', categories);
   }, [value, categories]);
 
   // Map API categories into SelectDropdown format

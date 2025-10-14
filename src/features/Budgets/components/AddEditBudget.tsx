@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { AppDispatch, RootState } from '../../../app/stores/stores';
 import { saveBudget } from '../redux/budgets.slice';
 import { Budget } from '../types/budgets.types';
@@ -74,8 +75,8 @@ export default function AddEditBudget({
     if (id && budgets.length > 0) {
       const foundBudget = budgets.find((b) => b.id === id);
       if (foundBudget) {
-        console.log('Found budget to edit:', foundBudget);
-        console.log('Budget categoryId:', foundBudget.categoryId);
+        // console.log('Found budget to edit:', foundBudget);
+        // console.log('Budget categoryId:', foundBudget.categoryId);
         setCurrentBudget(foundBudget);
       }
     } else if (editingBudget) {
@@ -85,9 +86,9 @@ export default function AddEditBudget({
 
   // Populate form when budget is loaded
   useEffect(() => {
-    const  budgetToEdit = currentBudget || editingBudget;
+    const budgetToEdit = currentBudget || editingBudget;
     if (budgetToEdit) {
-      console.log('Populating form with budget:', budgetToEdit);
+      // console.log('Populating form with budget:', budgetToEdit);
 
       // Format dates to YYYY-MM-DD for input[type="date"]
       const formatDate = (dateString: string | null | undefined) => {
@@ -101,17 +102,20 @@ export default function AddEditBudget({
       };
 
       // Extract categoryId from nested object or direct field
-      const extractedCategoryId = budgetToEdit.category?.id || budgetToEdit.categoryId || '';
+      const extractedCategoryId =
+        budgetToEdit.category?.id || budgetToEdit.categoryId || '';
 
-      console.log('Budget category object:', budgetToEdit.category);
-      console.log('Budget categoryId field:', budgetToEdit.categoryId);
-      console.log('Extracted categoryId:', extractedCategoryId);
+      // console.log('Budget category object:', budgetToEdit.category);
+      // console.log('Budget categoryId field:', budgetToEdit.categoryId);
+      // console.log('Extracted categoryId:', extractedCategoryId);
 
       const formData = {
         spendingType: budgetToEdit.spendingType || 'Monthly',
         budgetAmount: budgetToEdit.budgetAmount || 0,
         categoryId: extractedCategoryId,
-        date: formatDate(budgetToEdit.date) || new Date().toISOString().split('T')[0],
+        date:
+          formatDate(budgetToEdit.date) ||
+          new Date().toISOString().split('T')[0],
         budgetName: budgetToEdit.budgetName || '',
         paymentMethod: budgetToEdit.paymentMethod || '',
         frequency: budgetToEdit.frequency || 'Monthly',
@@ -125,15 +129,15 @@ export default function AddEditBudget({
         amountSpent: budgetToEdit.amountSpent || 0,
       };
 
-      console.log('Form data to reset:', formData);
-      console.log('CategoryId being set:', formData.categoryId);
+      // console.log('Form data to reset:', formData);
+      // console.log('CategoryId being set:', formData.categoryId);
 
       reset(formData);
 
       // Force set categoryId to ensure it's updated
       setTimeout(() => {
         setValue('categoryId', extractedCategoryId, { shouldValidate: true });
-        console.log('Force set categoryId:', extractedCategoryId);
+        // console.log('Force set categoryId:', extractedCategoryId);
       }, 0);
     }
   }, [currentBudget, editingBudget, reset, setValue]);
@@ -162,24 +166,26 @@ export default function AddEditBudget({
       };
 
       await dispatch(saveBudget(budgetData)).unwrap();
-      reset();
 
-      // Navigate back or call cancel callback
-      if (id) {
-        navigate('/budgets/overview');
-      } else if (onCancelEdit) {
-        onCancelEdit();
-      }
+      // Show success toast
+      toast.success(
+        budgetToEdit?.id
+          ? 'Budget updated successfully!'
+          : 'Budget created successfully!'
+      );
+
+      reset();
     } catch (error) {
       console.error('Failed to save budget:', error);
+      toast.error('Failed to save budget. Please try again.');
     }
   };
 
   const isEditing = currentBudget || editingBudget || id;
   const watchedCategoryId = watch('categoryId');
 
-  console.log('Current Budget:', currentBudget);
-  console.log('Watched categoryId from form:', watchedCategoryId);
+  // console.log('Current Budget:', currentBudget);
+  // console.log('Watched categoryId from form:', watchedCategoryId);
 
   return (
     <div className='bg-white rounded-lg p-6 shadow-sm border border-slate-200'>
@@ -203,7 +209,7 @@ export default function AddEditBudget({
 
           <Controller
             key={`category-${currentBudget?.id || 'new'}`}
-            name="categoryId"
+            name='categoryId'
             control={control}
             rules={{ required: 'Category is required' }}
             render={({ field }) => (

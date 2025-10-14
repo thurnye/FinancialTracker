@@ -9,6 +9,7 @@ import analyticsReducer from '../../features/Analytics/redux/analytics.slice';
 import dashboardReducer from '../../features/Dashboard/redux/dashboard.slice';
 import settingsReducer from '../../features/Settings/redux/settings.slice';
 import profileReducer from '../../features/Profile/redux/profile.slice';
+import transactionsReducer from '../../features/Transactions/redux/transaction.slice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     settings: settingsReducer,
     profile: profileReducer,
+    transactions: transactionsReducer,
   },
 });
 

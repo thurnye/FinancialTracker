@@ -8,7 +8,9 @@ import {
 import { defaultUserProfile, countries } from '../utils/settings.data';
 
 export default function SettingsProfile() {
-  const [avatarPreview, setAvatarPreview] = useState<string>(defaultUserProfile.avatar);
+  const [avatarPreview, setAvatarPreview] = useState<string>(
+    defaultUserProfile.avatar
+  );
 
   const profileForm = useForm<ProfileFormData>();
 
@@ -50,18 +52,18 @@ export default function SettingsProfile() {
   };
 
   const onProfileSubmit = (data: ProfileFormData) => {
-    console.log('Profile data:', data);
-    console.log('Avatar file:', data.avatar?.[0]);
+    // console.log('Profile data:', data);
+    // console.log('Avatar file:', data.avatar?.[0]);
     // Handle profile update
   };
 
   const onSecuritySubmit = (data: SecurityFormData) => {
-    console.log('Security data:', data);
+    // console.log('Security data:', data);
     // Handle security update
   };
 
   const onPersonalInfoSubmit = (data: PersonalInfoFormData) => {
-    console.log('Personal info data:', data);
+    // console.log('Personal info data:', data);
     // Handle personal info update
   };
 
@@ -70,9 +72,7 @@ export default function SettingsProfile() {
       <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
         <div className='lg:col-span-3'>
           <div className='bg-white rounded-lg p-6 shadow-sm border border-slate-200'>
-            <form
-              onSubmit={profileForm.handleSubmit(onProfileSubmit)}
-            >
+            <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
               <div className='flex flex-col items-center'>
                 <div className='mb-4'>
                   <div className='w-32 h-32 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 overflow-hidden border-4 border-white shadow-lg'>

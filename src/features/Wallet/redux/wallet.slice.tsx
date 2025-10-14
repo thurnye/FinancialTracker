@@ -3,8 +3,11 @@
  */
 
 import { createSlice } from '@reduxjs/toolkit';
-import { WalletAccount, ICreditCard, TransactionItem } from '../types/wallet.types';
+import { Wallet, WalletAccount, ICreditCard, TransactionItem } from '../types/wallet.types';
 import {
+  fetchWallets,
+  saveWallet,
+  deleteWallet,
   fetchWalletAccounts,
   saveWalletAccount,
   deleteWalletAccount,
@@ -17,6 +20,7 @@ import {
 } from './wallet.asyncThunkService';
 
 interface WalletState {
+  wallets: Wallet[];
   accounts: WalletAccount[];
   creditCards: ICreditCard[];
   transactions: TransactionItem[];
@@ -25,6 +29,7 @@ interface WalletState {
 }
 
 const initialState: WalletState = {
+  wallets: [],
   accounts: [],
   creditCards: [],
   transactions: [],
@@ -52,6 +57,45 @@ const walletSlice = createSlice({
     };
 
     builder
+      // Fetch Wallets
+      .addCase(fetchWallets.pending, startLoading)
+      .addCase(fetchWallets.fulfilled, (state, action) => {
+        stopLoading(state);
+        state.wallets = action.payload;
+      })
+      .addCase(fetchWallets.rejected, (state, action) => {
+        stopLoading(state);
+        state.error = action.payload as string;
+      })
+
+      // Save Wallet
+      .addCase(saveWallet.pending, startLoading)
+      .addCase(saveWallet.fulfilled, (state, action) => {
+        stopLoading(state);
+        const updatedWallet = action.payload;
+        const index = state.wallets.findIndex((w) => w.id === updatedWallet.id);
+        if (index !== -1) {
+          state.wallets[index] = updatedWallet;
+        } else {
+          state.wallets.unshift(updatedWallet);
+        }
+      })
+      .addCase(saveWallet.rejected, (state, action) => {
+        stopLoading(state);
+        state.error = action.payload as string;
+      })
+
+      // Delete Wallet
+      .addCase(deleteWallet.pending, startLoading)
+      .addCase(deleteWallet.fulfilled, (state, action) => {
+        stopLoading(state);
+        state.wallets = state.wallets.filter((w) => w.id !== action.payload);
+      })
+      .addCase(deleteWallet.rejected, (state, action) => {
+        stopLoading(state);
+        state.error = action.payload as string;
+      })
+
       // Fetch Accounts
       .addCase(fetchWalletAccounts.pending, startLoading)
       .addCase(fetchWalletAccounts.fulfilled, (state, action) => {
@@ -194,6 +238,9 @@ export default walletSlice.reducer;
 
 // Re-export async thunks for convenience
 export {
+  fetchWallets,
+  saveWallet,
+  deleteWallet,
   fetchWalletAccounts,
   saveWalletAccount,
   deleteWalletAccount,

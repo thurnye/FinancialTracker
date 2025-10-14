@@ -77,9 +77,9 @@ class ApiClient {
     if (config.data) config.data = sanitizeObject(config.data);
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, {
-        data: redactSensitiveData(config.data || {}),
-      });
+      // console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, {
+      //   data: redactSensitiveData(config.data || {}),
+      // });
     }
 
     return config;
@@ -90,7 +90,7 @@ class ApiClient {
     if (newToken) {
       TokenManager.setAccessToken(newToken);
       if (process.env.NODE_ENV === 'development') {
-        console.log('🔐 Access token updated from header.');
+        // console.log('🔐 Access token updated from header.');
       }
     }
     return response;
@@ -133,7 +133,7 @@ class ApiClient {
 
     // prevent recursive refresh loops
     if (isRefreshCall) {
-      console.warn('[API] Refresh call failed — not retrying recursively.');
+      // console.warn('[API] Refresh call failed — not retrying recursively.');
       TokenManager.clear();
     }
 
@@ -149,7 +149,7 @@ class ApiClient {
       this.isRefreshing ||
       window.location.pathname.includes('/auth/refresh')
     ) {
-      console.log('[API] Skipping duplicate refresh request.');
+      // console.log('[API] Skipping duplicate refresh request.');
       return null;
     }
 

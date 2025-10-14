@@ -7,10 +7,14 @@ import ColorSelect from '../../Settings/components/ColorSelect';
 interface AddEditWalletProps {
   onSave?: (wallet: Omit<WalletAccount, 'id'>) => void;
   onCancel?: () => void;
-  isEdit: boolean
+  isEdit: boolean;
 }
 
-export default function AddEditWallet({ onSave, onCancel, isEdit }: AddEditWalletProps) {
+export default function AddEditWallet({
+  onSave,
+  onCancel,
+  isEdit,
+}: AddEditWalletProps) {
   const {
     register,
     handleSubmit,
@@ -28,7 +32,7 @@ export default function AddEditWallet({ onSave, onCancel, isEdit }: AddEditWalle
   });
 
   const onSubmit = (data: Omit<WalletAccount, 'id'>) => {
-    console.log('Wallet data:', data);
+    // console.log('Wallet data:', data);
     if (onSave) {
       onSave(data);
     }
@@ -37,7 +41,9 @@ export default function AddEditWallet({ onSave, onCancel, isEdit }: AddEditWalle
 
   return (
     <div className='bg-white rounded-lg p-6 shadow-sm border border-slate-200'>
-      <h3 className='text-lg font-bold text-slate-900 mb-4'>{isEdit ? 'Update Wallet' : 'Add New Walled'}</h3>
+      <h3 className='text-lg font-bold text-slate-900 mb-4'>
+        {isEdit ? 'Update Wallet' : 'Add New Walled'}
+      </h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
         {/* Wallet Name */}
@@ -112,7 +118,9 @@ export default function AddEditWallet({ onSave, onCancel, isEdit }: AddEditWalle
             placeholder='0.00'
           />
           {errors.balance && (
-            <p className='text-xs text-red-600 mt-1'>{errors.balance.message}</p>
+            <p className='text-xs text-red-600 mt-1'>
+              {errors.balance.message}
+            </p>
           )}
         </div>
 

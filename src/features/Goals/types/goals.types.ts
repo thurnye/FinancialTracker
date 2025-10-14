@@ -13,10 +13,10 @@ export interface Goal {
   targetValue?: number | null;
   targetDate?: string | null;
   successCriteria?: string | null;
-  actions?: string | null;
-  resourcesNeeded?: string | null;
+  actions?: string[] | null;
+  resourcesNeeded?: string[] | null;
   obstacles?: string | null;
-  milestones?: string | null;
+  milestones?: string[] | null;
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;

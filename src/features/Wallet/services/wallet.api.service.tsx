@@ -4,10 +4,28 @@
  */
 
 import { apiClient } from '../../../shared/services/apiClient.service';
-import { WalletAccount, ICreditCard, TransactionItem, WalletData } from '../types/wallet.types';
+import { Wallet, WalletAccount, ICreditCard, TransactionItem, WalletData } from '../types/wallet.types';
 
 class WalletApi {
-  // ========== Wallet Accounts ==========
+  // ========== Wallet CRUD (Main Backend API) ==========
+
+  async getWallets(): Promise<Wallet[]> {
+    return apiClient.get<Wallet[]>('/wallet');
+  }
+
+  async getWalletById(id: string): Promise<Wallet> {
+    return apiClient.get<Wallet>(`/wallet/${id}`);
+  }
+
+  async saveWallet(data: Wallet): Promise<Wallet> {
+    return apiClient.post<Wallet>('/wallet/create-update', data);
+  }
+
+  async deleteWallet(walletId: string): Promise<void> {
+    return apiClient.delete<void>(`/wallet/${walletId}`);
+  }
+
+  // ========== Wallet Accounts (Legacy - UI Components) ==========
 
   async getAccounts(): Promise<WalletAccount[]> {
     return apiClient.get<WalletAccount[]>('/wallet/accounts');

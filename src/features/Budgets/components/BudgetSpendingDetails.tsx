@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
 import { AppDispatch } from '../../../app/stores/stores';
 import { deleteBudget } from '../redux/budgets.slice';
 import { budgetsData } from '../utils/budgets.data';
@@ -43,6 +44,7 @@ export default function BudgetSpendingDetails({ id }: IBudgetSpendingDetails) {
     setIsDeleting(true);
     try {
       await dispatch(deleteBudget(budget.id)).unwrap();
+      toast.success('Budget deleted successfully!');
       setShowDeleteModal(false);
       // Navigate to first budget or show empty state
       if (budgets.length > 1) {
@@ -53,6 +55,7 @@ export default function BudgetSpendingDetails({ id }: IBudgetSpendingDetails) {
       }
     } catch (error) {
       console.error('Failed to delete budget:', error);
+      toast.error('Failed to delete budget. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -161,6 +164,98 @@ export default function BudgetSpendingDetails({ id }: IBudgetSpendingDetails) {
                 </div>
               </div>
             </div>
+
+            {/* Budget Information */}
+            <div className='mb-5 bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
+              <h4 className='text-sm font-bold text-slate-800 mb-3'>Budget Information</h4>
+              <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                {budget.spendingType && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Spending Type</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.spendingType}</p>
+                  </div>
+                )}
+                {budget.budgetType && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Budget Type</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.budgetType}</p>
+                  </div>
+                )}
+                {budget.frequency && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Frequency</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.frequency}</p>
+                  </div>
+                )}
+                {budget.status && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Status</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.status}</p>
+                  </div>
+                )}
+                {budget.currency && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Currency</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.currency}</p>
+                  </div>
+                )}
+                {budget.paymentMethod && (
+                  <div>
+                    <p className='text-[10px] text-slate-500 mb-1'>Payment Method</p>
+                    <p className='text-sm font-semibold text-slate-800'>{budget.paymentMethod}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Timeline */}
+            {(budget.date || budget.startDate || budget.endDate) && (
+              <div className='mb-5 bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
+                <h4 className='text-sm font-bold text-slate-800 mb-3'>Timeline</h4>
+                <div className='grid grid-cols-3 gap-4'>
+                  {budget.date && (
+                    <div>
+                      <p className='text-[10px] text-slate-500 mb-1'>Date</p>
+                      <p className='text-sm font-semibold text-slate-800'>
+                        {new Date(budget.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+                  {budget.startDate && (
+                    <div>
+                      <p className='text-[10px] text-slate-500 mb-1'>Start Date</p>
+                      <p className='text-sm font-semibold text-slate-800'>
+                        {new Date(budget.startDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+                  {budget.endDate && (
+                    <div>
+                      <p className='text-[10px] text-slate-500 mb-1'>End Date</p>
+                      <p className='text-sm font-semibold text-slate-800'>
+                        {new Date(budget.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Income Source */}
+            {budget.incomeSource && (
+              <div className='mb-5 bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
+                <h4 className='text-sm font-bold text-slate-800 mb-2'>Income Source</h4>
+                <p className='text-sm text-slate-600'>{budget.incomeSource}</p>
+              </div>
+            )}
+
+            {/* Notes */}
+            {budget.notes && (
+              <div className='mb-5 bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
+                <h4 className='text-sm font-bold text-slate-800 mb-2'>Notes</h4>
+                <p className='text-sm text-slate-600'>{budget.notes}</p>
+              </div>
+            )}
 
             <Card className='rounded-xl'>
               <h3 className='text-base font-semibold text-slate-800 mb-3'>

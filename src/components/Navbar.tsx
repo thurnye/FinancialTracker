@@ -7,9 +7,9 @@ import { logoutUser } from '../features/auth/redux/slice/asyncThunkServices';
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {isAuthenticated, user} = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
-  console.log(isAuthenticated)
+  // console.log(isAuthenticated)
 
   const handleLogout = async () => {
     try {
