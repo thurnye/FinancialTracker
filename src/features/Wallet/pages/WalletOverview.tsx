@@ -10,7 +10,7 @@ import { Spinner, Alert } from 'react-bootstrap';
 export default function WalletOverview() {
   const dispatch = useDispatch<AppDispatch>();
   const { wallets, loading, error } = useSelector((state: RootState) => state.wallet);
-  const [walletPortfolioId, setWalletPortfolioId] = useState<string>('1');
+  const [walletPortfolioId, setWalletPortfolioId] = useState<string>('');
 
   useEffect(() => {
     dispatch(fetchWallets());

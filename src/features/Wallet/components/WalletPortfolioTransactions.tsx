@@ -6,7 +6,10 @@ import * as LucideIcons from 'lucide-react';
 import { Link } from 'react-router-dom';
 import IconStyle from '../../../components/ui/IconStyle';
 import DataTable from '../../../components/ui/DataTable';
-import { fetchTransactionsByWallet, fetchTransactions } from '../../Transactions/redux/transaction.asyncThunkService';
+import {
+  fetchTransactionsByWallet,
+  fetchTransactions,
+} from '../../Transactions/redux/transaction.asyncThunkService';
 import { Transaction } from '../../Transactions/types/transaction.types';
 import { Spinner } from '../../../components/ui';
 import { useAppSelector } from '../../../app/hooks/app.hooks';
@@ -15,17 +18,26 @@ interface WalletPortfolioTransactionsProps {
   walletId?: string;
 }
 
-export default function WalletPortfolioTransactions({ walletId }: WalletPortfolioTransactionsProps) {
+export default function WalletPortfolioTransactions({
+  walletId,
+}: WalletPortfolioTransactionsProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { transactions, loading, error, pagination } = useAppSelector((state) => state.transactions);
+  const { transactions, loading, error, pagination } = useAppSelector(
+    (state) => state.transactions
+  );
+  const [page, setPage] = React.useState(1);
+  const [limit, setLimit] = React.useState(20);
 
   useEffect(() => {
     if (walletId) {
-      dispatch(fetchTransactionsByWallet({ walletId, filters: { page: 1, limit: 20 } }));
-    } else {
-      dispatch(fetchTransactions({ page: 1, limit: 20 }));
+      dispatch(
+        fetchTransactionsByWallet({ walletId, filters: { page, limit } })
+      );
     }
-  }, [dispatch, walletId]);
+    // else {
+    //   dispatch(fetchTransactions({ page: 1, limit: 20 }));
+    // }
+  }, [dispatch, walletId, page, limit]);
 
   const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
@@ -35,10 +47,20 @@ export default function WalletPortfolioTransactions({ walletId }: WalletPortfoli
         cell: ({ row }) => {
           const typeColors = {
             income: { bg: '#10b98120', color: '#10b981', icon: 'TrendingUp' },
-            expense: { bg: '#ef444420', color: '#ef4444', icon: 'TrendingDown' },
-            transfer: { bg: '#3b82f620', color: '#3b82f6', icon: 'ArrowLeftRight' },
+            expense: {
+              bg: '#ef444420',
+              color: '#ef4444',
+              icon: 'TrendingDown',
+            },
+            transfer: {
+              bg: '#3b82f620',
+              color: '#3b82f6',
+              icon: 'ArrowLeftRight',
+            },
           };
-          const typeConfig = typeColors[row.original.type as keyof typeof typeColors] || typeColors.expense;
+          const typeConfig =
+            typeColors[row.original.type as keyof typeof typeColors] ||
+            typeColors.expense;
 
           return (
             <div className='flex items-center gap-2'>
@@ -103,7 +125,11 @@ export default function WalletPortfolioTransactions({ walletId }: WalletPortfoli
                   : 'text-slate-800'
               }`}
             >
-              {row.original.type === 'income' ? '+' : row.original.type === 'expense' ? '-' : ''}
+              {row.original.type === 'income'
+                ? '+'
+                : row.original.type === 'expense'
+                ? '-'
+                : ''}
               ${Math.abs(row.original.amount).toFixed(2)}
             </p>
             <span className='text-[10px] text-slate-500'>
@@ -157,7 +183,9 @@ export default function WalletPortfolioTransactions({ walletId }: WalletPortfoli
         </div>
         <div className='text-center py-8'>
           <p className='text-sm text-slate-500'>
-            {walletId ? 'No transactions found for this wallet' : 'No transactions found'}
+            {walletId
+              ? 'No transactions found for this wallet'
+              : 'No transactions found'}
           </p>
         </div>
       </div>
@@ -183,6 +211,11 @@ export default function WalletPortfolioTransactions({ walletId }: WalletPortfoli
         columns={columns}
         showPagination={true}
         showFilter={false}
+        setLimit={setLimit}
+        setPage={setPage}
+        pageCount={pagination.totalPages}
+        pageSize={pagination.pageSize}
+        totalItems={pagination.totalItems}
       />
     </div>
   );
