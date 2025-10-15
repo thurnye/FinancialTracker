@@ -1,0 +1,279 @@
+// import { DashboardData } from '../types/dashboard.types';
+
+// export const dashboardData: DashboardData = {
+  
+//   balanceCards: [
+//     {
+//       id: '1',
+//       title: 'Total Balance',
+//       amount: 432668,
+//       change: 10.5,
+//       changePercentage: 2.5,
+//     },
+//     {
+//       id: '2',
+//       title: 'Total Period Change',
+//       amount: 245860,
+//       change: -5.2,
+//       changePercentage: -2.1,
+//     },
+//     {
+//       id: '3',
+//       title: 'Total Period Expenses',
+//       amount: 2530,
+//       change: 3.8,
+//       changePercentage: 1.5,
+//     },
+//     {
+//       id: '4',
+//       title: 'Total Period Income',
+//       amount: 24560,
+//       change: 12.3,
+//       changePercentage: 5.2,
+//     },
+//   ],
+
+//   budgetHealth: {
+//     label: 'Budget Health',
+//     value: 221478,
+//   },
+
+//   monthlyBudgets: [
+//     {
+//       id: '1',
+//       name: 'Grocery Stores',
+//       amount: 3000,
+//       total: 5000,
+//       color: '#10b981',
+//       icon: 'shopping-cart',
+//     },
+//     {
+//       id: '2',
+//       name: 'Transportation',
+//       amount: 2000,
+//       total: 3000,
+//       color: '#3b82f6',
+//       icon: 'car',
+//     },
+//     {
+//       id: '3',
+//       name: 'Bills',
+//       amount: 1500,
+//       total: 2000,
+//       color: '#f59e0b',
+//       icon: 'file-text',
+//     },
+//     {
+//       id: '4',
+//       name: 'Education',
+//       amount: 800,
+//       total: 1000,
+//       color: '#8b5cf6',
+//       icon: 'book',
+//     },
+//     {
+//       id: '5',
+//       name: 'Clothes',
+//       amount: 500,
+//       total: 1000,
+//       color: '#ec4899',
+//       icon: 'shirt',
+//     },
+//   ],
+
+//   expenseBreakdown: [
+//     {
+//       category: 'Food',
+//       percentage: 35,
+//       amount: 1200,
+//       color: '#f59e0b',
+//     },
+//     {
+//       category: 'Transport',
+//       percentage: 22,
+//       amount: 750,
+//       color: '#3b82f6',
+//     },
+//     {
+//       category: 'Healthcare',
+//       percentage: 12,
+//       amount: 410,
+//       color: '#10b981',
+//     },
+//     {
+//       category: 'Education',
+//       percentage: 8,
+//       amount: 275,
+//       color: '#8b5cf6',
+//     },
+//     {
+//       category: 'Utilities',
+//       percentage: 8,
+//       amount: 275,
+//       color: '#06b6d4',
+//     },
+//     {
+//       category: 'Entertainment',
+//       percentage: 8,
+//       amount: 275,
+//       color: '#ec4899',
+//     },
+//   ],
+
+//   monthlyIncomeExpenses: [
+//     { month: 'Jan', income: 5000, expense: 3500 },
+//     { month: 'Feb', income: 5500, expense: 4000 },
+//     { month: 'Mar', income: 5200, expense: 3800 },
+//     { month: 'Apr', income: 6000, expense: 4200 },
+//     { month: 'May', income: 5800, expense: 4100 },
+//     { month: 'Jun', income: 6200, expense: 4500 },
+//     { month: 'Jul', income: 6500, expense: 4800 },
+//     { month: 'Aug', income: 6000, expense: 4300 },
+//     { month: 'Sep', income: 6300, expense: 4600 },
+//     { month: 'Oct', income: 6700, expense: 5000 },
+//     { month: 'Nov', income: 6400, expense: 4700 },
+//     { month: 'Dec', income: 7000, expense: 5200 },
+//   ],
+
+//   monthlyExpenses: [
+//     { month: 'Jan', income: 3200, expense: 2800 },
+//     { month: 'Feb', income: 3500, expense: 3100 },
+//     { month: 'Mar', income: 3300, expense: 2900 },
+//     { month: 'Apr', income: 3800, expense: 3200 },
+//     { month: 'May', income: 3600, expense: 3000 },
+//     { month: 'Jun', income: 4000, expense: 3400 },
+//     { month: 'Jul', income: 4200, expense: 3600 },
+//     { month: 'Aug', income: 3900, expense: 3300 },
+//     { month: 'Sep', income: 4100, expense: 3500 },
+//     { month: 'Oct', income: 4300, expense: 3700 },
+//     { month: 'Nov', income: 4000, expense: 3400 },
+//     { month: 'Dec', income: 4500, expense: 3900 },
+//   ],
+
+//   savingGoals: [
+//     {
+//       id: '1',
+//       name: 'Vacation',
+//       current: 8000,
+//       target: 10000,
+//       percentage: 80,
+//       color: '#ef4444',
+//     },
+//     {
+//       id: '2',
+//       name: 'Emergency',
+//       current: 15000,
+//       target: 15000,
+//       percentage: 100,
+//       color: '#10b981',
+//     },
+//     {
+//       id: '3',
+//       name: 'New Car',
+//       current: 28500,
+//       target: 30000,
+//       percentage: 95,
+//       color: '#3b82f6',
+//     },
+//     {
+//       id: '4',
+//       name: 'Laptop',
+//       current: 1200,
+//       target: 2000,
+//       percentage: 60,
+//       color: '#f59e0b',
+//     },
+//   ],
+
+//   transactionHistory: [
+//     {
+//       id: '1',
+//       category: 'Grocery',
+//       date: '10.10.2024',
+//       description: 'Walmart Fresh Products',
+//       amount: -45.0,
+//       currency: 'USD',
+//       icon: 'shopping-cart',
+//       color: '#10b981',
+//     },
+//     {
+//       id: '2',
+//       category: 'Bills & Fees',
+//       date: '10.10.2024',
+//       description: 'Monthly Internet Subscription',
+//       amount: -65.0,
+//       currency: 'USD',
+//       icon: 'wifi',
+//       color: '#3b82f6',
+//     },
+//     {
+//       id: '3',
+//       category: 'Car',
+//       date: '10.10.2024',
+//       description: 'Fuel at the Mall',
+//       amount: -32.0,
+//       currency: 'USD',
+//       icon: 'car',
+//       color: '#f59e0b',
+//     },
+//     {
+//       id: '4',
+//       category: 'Education',
+//       date: '10.10.2024',
+//       description: 'Online Course Subscription',
+//       amount: -25.0,
+//       currency: 'USD',
+//       icon: 'book',
+//       color: '#8b5cf6',
+//     },
+//     {
+//       id: '5',
+//       category: 'Entertainment',
+//       date: '10.10.2024',
+//       description: 'Movie & Streaming Service',
+//       amount: -15.0,
+//       currency: 'USD',
+//       icon: 'film',
+//       color: '#ec4899',
+//     },
+//   ],
+
+//   paymentsHistory: [
+//     {
+//       id: '1',
+//       name: 'Electricity',
+//       date: '10 months ago',
+//       amount: 65.0,
+//       currency: 'USD',
+//       status: 'paid',
+//     },
+//     {
+//       id: '2',
+//       name: 'Internet',
+//       date: '9 months ago',
+//       amount: 65.0,
+//       currency: 'USD',
+//       status: 'paid',
+//     },
+//     {
+//       id: '3',
+//       name: 'Apple Music',
+//       date: '8 months ago',
+//       amount: 9.99,
+//       currency: 'USD',
+//       status: 'paid',
+//     },
+//   ],
+// };
+
+// /*
+// The total Balance shows the overall financial standing, while the Total Period Change indicates how much the balance has increased or decreased over a specific period. The Total Period Expenses and Total Period Income provide insights into spending and earning patterns, respectively.
+// The monthly Budgets section helps users track their spending against set budgets in various categories, promoting better financial management. The Expense Breakdown offers a visual representation of where money is being spent, aiding in identifying major expense areas.
+// The Monthly Income & Expenses and Monthly Expenses charts provide a month-by-month comparison of income versus expenses, highlighting trends and helping users plan their finances better. The Saving Goals section motivates users to save by tracking progress towards specific financial goals.
+// The Transaction History gives a quick overview of recent transactions, while the Payments History keeps track of recurring payments, ensuring users stay on top of their financial obligations.
+
+// The budget health indicates how well the user is managing their budget, with a positive value suggesting good financial health.
+// saving goals help users stay motivated by showing progress towards their financial targets.
+
+
+// */

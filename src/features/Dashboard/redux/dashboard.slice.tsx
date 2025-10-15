@@ -4,9 +4,10 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchDashboardData } from './dashboard.asyncThunkService';
+import { DashboardData } from '../types/dashboard.types';
 
 interface DashboardState {
-  data: any | null;
+  data: DashboardData | null;
   loading: boolean;
   error: string | null;
 }

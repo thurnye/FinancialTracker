@@ -52,6 +52,8 @@ const LineChartComponent: React.FC<LineChartComponentProps> = ({
   customTooltip,
   colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b'],
 }) => {
+
+  console.log('LineChartComponent data:', data);
   const chartContent = (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data}>

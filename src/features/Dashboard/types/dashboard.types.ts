@@ -6,26 +6,25 @@ export interface BalanceCard {
   changePercentage: number;
 }
 
-export interface BudgetItem {
-  id: string;
-  name: string;
-  amount: number;
-  total: number;
-  color: string;
-  icon: string;
-}
-
 export interface ExpenseBreakdownItem {
   category: string;
   percentage: number;
   amount: number;
   color: string;
+  icon: string;
 }
 
 export interface MonthlyIncomeExpense {
   month: string;
   income: number;
   expense: number;
+}
+
+export interface MonthlyBudgetHealth {
+  month: string;
+  totalBudget: number;
+  totalIncome: number;
+  percentageUsed: number;
 }
 
 export interface PaymentHistoryItem {
@@ -35,15 +34,20 @@ export interface PaymentHistoryItem {
   amount: number;
   currency: string;
   status: 'paid' | 'pending' | 'failed';
+  category: string;
+  icon: string;
+  color: string;
+  daysAgo: number;
 }
 
-export interface SavingGoal {
+export interface SavingGoalAndBudgetGoal {
   id: string;
   name: string;
   current: number;
   target: number;
   percentage: number;
   color: string;
+  icon: string;
 }
 
 export interface TransactionHistoryItem {
@@ -61,15 +65,28 @@ export interface BudgetHealthData {
   label: string;
   value: number;
 }
+export interface WalletSpending {
+  walletId: string
+  walletName: string;
+  walletType: string;
+  currency: string;
+  totalIncome: number;
+  totalExpense: number;
+  netBalance: number;
+  color: string;
+  icon: string;
+}
 
 export interface DashboardData {
   balanceCards: BalanceCard[];
   budgetHealth: BudgetHealthData;
-  monthlyBudgets: BudgetItem[];
   expenseBreakdown: ExpenseBreakdownItem[];
   monthlyIncomeExpenses: MonthlyIncomeExpense[];
-  monthlyExpenses: MonthlyIncomeExpense[];
-  savingGoals: SavingGoal[];
+  monthlyBudgetHealth: MonthlyBudgetHealth[];
+  savingGoals: SavingGoalAndBudgetGoal[];
+  budgetGoals: SavingGoalAndBudgetGoal[];
   transactionHistory: TransactionHistoryItem[];
   paymentsHistory: PaymentHistoryItem[];
+  walletSpending: WalletSpending[];
+  latestTransactions: TransactionHistoryItem[];
 }

@@ -1,9 +1,29 @@
-import React from 'react';
-import { dashboardData } from '../utils/dashboard.data';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { Spinner } from '../../../components/ui';
+import { useAppSelector } from '../../../app/hooks/app.hooks';
 
 export default function BalanceWidgets() {
-  const { balanceCards } = dashboardData;
+  const { data, loading, error } = useAppSelector((state) => state.dashboard);
+
+  if (loading) {
+    return (
+      <div className='flex justify-center items-center py-8'>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+        <p className='text-sm text-red-600'>{error}</p>
+      </div>
+    );
+  }
+
+  if (!data || !data.balanceCards) return null;
+
+  const { balanceCards } = data;
 
   return (
     <div>
@@ -14,8 +34,14 @@ export default function BalanceWidgets() {
             className='bg-white rounded-lg p-3 shadow-sm border border-slate-200 hover:shadow-md transition-shadow'
           >
             <p className='text-xs text-slate-600 mb-1'>{card.title}</p>
-            <h3 className='text-xl font-bold text-slate-800 mb-1'>
-              ${card.amount.toLocaleString()}
+            <h3
+              className={`text-xl font-bold text-slate-800 mb-1
+              ${card.amount >= 0 ? 'text-emerald-600' : 'text-red-600'}
+            `}
+            >
+              <span className={`${card.amount >= 0 ? '' : 'text-red-600'}`}>
+                ${card.amount.toLocaleString()}
+              </span>
             </h3>
             <div className='flex items-center gap-1'>
               {card.change >= 0 ? (

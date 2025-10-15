@@ -1,30 +1,24 @@
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../app/stores/stores';
 import ProgressCircle from '../../../components/charts/ProgressCircle';
-import { dashboardData } from '../utils/dashboard.data';
+import * as LucideIcons from 'lucide-react';
+import { Spinner } from 'react-bootstrap';
+import { useAppSelector } from '../../../app/hooks/app.hooks';
 
 export default function GoalsAndTransactions() {
-  const { savingGoals, transactionHistory } = dashboardData;
+  const { data } = useAppSelector((state) => state.dashboard);
+
+  if (!data || !data.latestTransactions)
+    return (
+      <div className='flex justify-center items-center py-6 text-slate-500'>
+        <Spinner animation='border' size='sm' className='me-2' />
+      </div>
+    );
+
+  const {  latestTransactions } = data;
 
   return (
-    <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-      {/* Saving Goals */}
-      <div className='bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
-        <h3 className='text-base font-semibold text-slate-800 mb-3'>
-          Saving Goals
-        </h3>
-        <div className='grid grid-cols-2 gap-3'>
-          {savingGoals.map((goal) => (
-            <div key={goal.id} className='text-center'>
-              <ProgressCircle percentage={goal.percentage} color={goal.color} />
-
-              <p className='text-xs font-medium text-slate-800'>{goal.name}</p>
-              <p className='text-[10px] text-slate-500'>
-                ${goal.current.toLocaleString()} / $
-                {goal.target.toLocaleString()}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className=''>
 
       {/* Transaction History */}
       <div className='bg-white rounded-lg p-4 shadow-sm border border-slate-200'>
@@ -37,41 +31,59 @@ export default function GoalsAndTransactions() {
           </button>
         </div>
         <div className='space-y-2'>
-          {transactionHistory.map((transaction) => (
-            <div
-              key={transaction.id}
-              className='flex items-center justify-between py-2 border-b border-slate-100 last:border-0'
-            >
-              <div className='flex items-center gap-2'>
-                <div
-                  className='w-8 h-8 rounded-full flex items-center justify-center'
-                  style={{ backgroundColor: `${transaction.color}20` }}
-                >
+          {latestTransactions.map((transaction) => {
+            // Convert icon name to PascalCase for Lucide icons
+            const iconName = transaction.icon
+              ? transaction.icon.charAt(0).toUpperCase() +
+                transaction.icon
+                  .slice(1)
+                  .replace(/-([a-z])/g, (g) => g[1].toUpperCase())
+              : 'DollarSign';
+            const IconComponent =
+              (LucideIcons as any)[iconName] || LucideIcons.DollarSign;
+
+            return (
+              <div
+                key={transaction.id}
+                className='flex items-center justify-between py-2 border-b border-slate-100 last:border-0'
+              >
+                <div className='flex items-center gap-2'>
                   <div
-                    className='w-1.5 h-1.5 rounded-full'
-                    style={{ backgroundColor: transaction.color }}
-                  ></div>
+                    className='w-8 h-8 rounded-full flex items-center justify-center'
+                    style={{ backgroundColor: `${transaction.color}20` }}
+                  >
+                    <IconComponent
+                      size={16}
+                      style={{ color: transaction.color }}
+                    />
+                  </div>
+                  <div>
+                    <p className='text-xs font-medium text-slate-800'>
+                      {transaction.category}
+                    </p>
+                    <p className='text-[10px] text-slate-500'>
+                      {transaction.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className='text-xs font-medium text-slate-800'>
-                    {transaction.category}
+                <div className='text-right'>
+                  <p
+                    className={`text-xs font-semibold ${
+                      transaction.amount < 0
+                        ? 'text-red-600'
+                        : 'text-emerald-600'
+                    }`}
+                  >
+                    {transaction.amount < 0 ? '-' : '+'}$
+                    {Math.abs(transaction.amount).toFixed(2)}
                   </p>
                   <p className='text-[10px] text-slate-500'>
-                    {transaction.description}
+                    {transaction.currency}
                   </p>
                 </div>
               </div>
-              <div className='text-right'>
-                <p className='text-xs font-semibold text-slate-800'>
-                  {transaction.amount < 0 ? '-' : '+'}$
-                  {Math.abs(transaction.amount).toFixed(2)}
-                </p>
-                <p className='text-[10px] text-slate-500'>
-                  {transaction.currency}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

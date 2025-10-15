@@ -2,7 +2,7 @@
 export * from './types/transaction.types';
 
 // Services
-export { TransactionApiService } from './services/transaction.api.service';
+export { TransactionApiService } from './services/transaction.api.service 2';
 
 // Redux
 export * from './redux/transaction.asyncThunkService';
