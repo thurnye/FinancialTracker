@@ -1,42 +1,16 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../app/stores/stores';
 import { ColumnDef } from '@tanstack/react-table';
 import AnalyticsTransactions from './AnalyticsTransactions';
-import { analyticsData } from '../utils/analytics.data';
 import Card from '../../../components/ui/Card';
 import PieChartComponent from '../../../components/charts/PieChartComponent';
 import DataTable from '../../../components/ui/DataTable';
-
-interface ExpenseCategory {
-  id: string;
-  name: string;
-  amount: number;
-  percentage: number;
-  color: string;
-}
+import { ExpenseCategory } from '../types/analytics.types';
+import { useAppSelector } from '../../../app/hooks/app.hooks';
 
 export default function AnalyticsExpenses() {
-  const { expenseCategories } = analyticsData;
-
-  const chartData = expenseCategories.map((category) => ({
-    name: category.name,
-    value: category.percentage,
-    amount: category.amount,
-    color: category.color,
-  }));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className='bg-white px-3 py-2 rounded-lg shadow-lg border border-slate-200'>
-          <p className='text-xs font-semibold text-slate-800'>{data.name}</p>
-          <p className='text-xs text-slate-600'>Amount: ${data.amount}</p>
-          <p className='text-xs text-slate-600'>Percentage: {data.value}%</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const { data } = useAppSelector((state) => state.analytics);
 
   const columns = useMemo<ColumnDef<ExpenseCategory>[]>(
     () => [
@@ -79,6 +53,31 @@ export default function AnalyticsExpenses() {
     ],
     []
   );
+
+  if (!data || !data.expenseCategories) return null;
+
+  const { expenseCategories } = data;
+
+  const chartData = expenseCategories.map((category) => ({
+    name: category.name,
+    value: category.percentage,
+    amount: category.amount,
+    color: category.color,
+  }));
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className='bg-white px-3 py-2 rounded-lg shadow-lg border border-slate-200'>
+          <p className='text-xs font-semibold text-slate-800'>{data.name}</p>
+          <p className='text-xs text-slate-600'>Amount: ${data.amount}</p>
+          <p className='text-xs text-slate-600'>Percentage: {data.value}%</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div>

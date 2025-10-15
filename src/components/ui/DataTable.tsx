@@ -77,7 +77,7 @@ export default function DataTable<TData>({
 
   return (
     <div className={`w-full ${className}`}>
-      {/* ✅ Global Filter */}
+      {/* Global Filter */}
       {showFilter && (
         <div className="mb-4">
           <input
@@ -90,7 +90,7 @@ export default function DataTable<TData>({
         </div>
       )}
 
-      {/* ✅ Table */}
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -165,7 +165,7 @@ export default function DataTable<TData>({
         </table>
       </div>
 
-      {/* ✅ Server-side Pagination */}
+      {/* Server-side Pagination */}
       {showPagination && (
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
           <div className="text-xs text-slate-600">
