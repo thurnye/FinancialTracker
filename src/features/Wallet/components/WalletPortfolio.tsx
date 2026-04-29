@@ -88,7 +88,7 @@ export default function WalletPortfolio({
 
       {/* Add New Wallet Button */}
       <Link
-        to={'/wallet/add-wallet'}
+       to={'/settings/bank-account'}
         className='w-full bg-white rounded-lg p-3 shadow-sm border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-emerald-600'
       >
         <Plus size={16} />
